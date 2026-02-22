@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.text.Normalizer;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.regex.Pattern;
 
 @Service
@@ -42,7 +43,6 @@ public class PostService {
         Post post = postRepository.findBySlug(slug)
                 .orElseThrow(() -> new IllegalArgumentException("Post not found: " + slug));
         postRepository.incrementViewCount(post.getId());
-        post.setViewCount(post.getViewCount() + 1);
         firehoseService.sendEvent("post_view", "{\"postId\":\"" + post.getId() + "\",\"slug\":\"" + slug + "\"}");
         return toResponse(post, currentUser);
     }
@@ -122,9 +122,9 @@ public class PostService {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new IllegalArgumentException("Post not found"));
 
-        if (postLikeRepository.existsByPostIdAndUserId(postId, user.getId())) {
-            postLikeRepository.findByPostIdAndUserId(postId, user.getId())
-                    .ifPresent(postLikeRepository::delete);
+        Optional<PostLike> existingLike = postLikeRepository.findByPostIdAndUserId(postId, user.getId());
+        if (existingLike.isPresent()) {
+            postLikeRepository.delete(existingLike.get());
             postRepository.decrementLikeCount(postId);
             return false;
         } else {

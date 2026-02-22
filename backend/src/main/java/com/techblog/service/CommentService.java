@@ -115,12 +115,18 @@ public class CommentService {
 
     private CommentResponse toCommentResponse(Map<String, AttributeValue> item) {
         CommentResponse response = new CommentResponse();
-        response.setId(item.get("commentId").s());
-        response.setPostId(Long.parseLong(item.get("postId").s()));
-        response.setAuthorId(Long.parseLong(item.get("authorId").s()));
-        response.setAuthorUsername(item.get("authorUsername").s());
-        response.setContent(item.get("content").s());
-        response.setCreatedAt(Instant.parse(item.get("createdAt").s()));
+        AttributeValue commentIdAttr = item.get("commentId");
+        AttributeValue postIdAttr = item.get("postId");
+        AttributeValue authorIdAttr = item.get("authorId");
+        AttributeValue authorUsernameAttr = item.get("authorUsername");
+        AttributeValue contentAttr = item.get("content");
+        AttributeValue createdAtAttr = item.get("createdAt");
+        if (commentIdAttr != null) response.setId(commentIdAttr.s());
+        if (postIdAttr != null) response.setPostId(Long.parseLong(postIdAttr.s()));
+        if (authorIdAttr != null) response.setAuthorId(Long.parseLong(authorIdAttr.s()));
+        if (authorUsernameAttr != null) response.setAuthorUsername(authorUsernameAttr.s());
+        if (contentAttr != null) response.setContent(contentAttr.s());
+        if (createdAtAttr != null) response.setCreatedAt(Instant.parse(createdAtAttr.s()));
         return response;
     }
 }
