@@ -15,11 +15,8 @@ export default function EditPostPage() {
   const { data: post } = useQuery({
     queryKey: ['post-edit', postId],
     queryFn: async () => {
-      // Fetch post by ID via search through list (no direct by-ID endpoint for published posts)
-      const { data } = await api.get(`/api/posts?page=0&size=100`)
-      const found = data.content.find(p => p.id === Number(postId))
-      if (!found) throw new Error('Post not found')
-      return found
+      const { data } = await api.get(`/api/posts/id/${postId}`)
+      return data
     }
   })
 

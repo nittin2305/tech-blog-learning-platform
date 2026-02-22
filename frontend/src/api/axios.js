@@ -19,7 +19,8 @@ api.interceptors.response.use(
     if (error.response?.status === 401) {
       localStorage.removeItem('token')
       localStorage.removeItem('user')
-      window.location.href = '/login'
+      // Dispatch event so React Router can navigate without a full reload
+      window.dispatchEvent(new CustomEvent('auth:logout'))
     }
     return Promise.reject(error)
   }

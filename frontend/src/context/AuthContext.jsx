@@ -1,9 +1,11 @@
-import { createContext, useContext, useState, useCallback } from 'react'
+import { createContext, useContext, useState, useCallback, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import api from '../api/axios'
 
 const AuthContext = createContext(null)
 
 export function AuthProvider({ children }) {
+  const navigate = useNavigate()
   const [token, setToken] = useState(() => localStorage.getItem('token'))
   const [user, setUser] = useState(() => {
     try {
@@ -13,6 +15,19 @@ export function AuthProvider({ children }) {
       return null
     }
   })
+
+  const logout = useCallback(() => {
+    localStorage.removeItem('token')
+    localStorage.removeItem('user')
+    setToken(null)
+    setUser(null)
+  }, [])
+
+  useEffect(() => {
+    const handler = () => { logout(); navigate('/login') }
+    window.addEventListener('auth:logout', handler)
+    return () => window.removeEventListener('auth:logout', handler)
+  }, [logout, navigate])
 
   const login = useCallback(async (email, password) => {
     const { data } = await api.post('/api/auth/login', { email, password })
@@ -30,13 +45,6 @@ export function AuthProvider({ children }) {
     setToken(data.token)
     setUser({ username: data.username, email: data.email, role: data.role })
     return data
-  }, [])
-
-  const logout = useCallback(() => {
-    localStorage.removeItem('token')
-    localStorage.removeItem('user')
-    setToken(null)
-    setUser(null)
   }, [])
 
   return (
