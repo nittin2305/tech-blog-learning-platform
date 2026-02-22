@@ -8,6 +8,8 @@ terraform {
     }
   }
 
+  # Replace YOUR_TERRAFORM_STATE_BUCKET with your actual bucket name.
+  # See README.md "AWS Deployment" section for setup instructions.
   backend "s3" {
     bucket  = "YOUR_TERRAFORM_STATE_BUCKET"
     key     = "tech-blog/terraform.tfstate"
