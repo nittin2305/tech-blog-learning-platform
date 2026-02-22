@@ -1,0 +1,41 @@
+# Java / Maven
+target/
+*.class
+*.jar
+*.war
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+# Node / npm
+node_modules/
+dist/
+.env.local
+npm-debug.log*
+
+# Terraform
+**/.terraform/
+*.tfstate
+*.tfstate.backup
+*.tfvars
+!*.tfvars.example
+.terraform.lock.hcl
+
+# IDEs
+.idea/
+*.iml
+.vscode/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Secrets
+*.env
+.env
+!.env.example
+!frontend/.env.example
+
+# Logs
+*.log
+logs/
